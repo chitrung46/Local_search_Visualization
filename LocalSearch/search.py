@@ -57,6 +57,7 @@ class LocalSearchStrategy:
         print(path)
         return path
 
+    # Local Beam Search
     def get_successors(self, x, y, space):
         X, Y, val = space
         successors = []
@@ -71,7 +72,6 @@ class LocalSearchStrategy:
                     successors.append((new_x, new_y, val[new_y, new_x]))
         return successors
 
-    # Local Beam Search
     def local_beam_search(self, problem, k=1):
         X, Y, V = problem.X, problem.Y, problem.Z
 
