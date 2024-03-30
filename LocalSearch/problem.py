@@ -1,6 +1,7 @@
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 class Problem:
     def __init__(self, filename):
@@ -15,12 +16,14 @@ class Problem:
         Y = np.arange(h)
         Z = img
         return X, Y, Z
-    
+
     def show(self):
         X, Y = np.meshgrid(self.X, self.Y)
-        fig = plt.figure(figsize=(8,6))
-        ax = plt.axes(projection='3d')
-        ax.plot_surface(X, Y, self.Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
+        fig = plt.figure(figsize=(8, 6))
+        ax = plt.axes(projection="3d")
+        ax.plot_surface(
+            X, Y, self.Z, rstride=1, cstride=1, cmap="viridis", edgecolor="none"
+        )
         plt.show()
 
     def draw_path(self, path):
@@ -29,9 +32,10 @@ class Problem:
         Zpath = [t[2] for t in path]
 
         X, Y = np.meshgrid(self.X, self.Y)
-        fig = plt.figure(figsize=(8,6))
-        ax = plt.axes(projection='3d')
-        ax.plot_surface(X, Y, self.Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
-        ax.plot(Xpath, Ypath, Zpath, 'r-', zorder=3, linewidth=0.5)
+        fig = plt.figure(figsize=(8, 6))
+        ax = plt.axes(projection="3d")
+        ax.plot_surface(
+            X, Y, self.Z, rstride=1, cstride=1, cmap="viridis", edgecolor="none"
+        )
+        ax.plot(Xpath, Ypath, Zpath, "r-", zorder=3, linewidth=0.5)
         plt.show()
-    

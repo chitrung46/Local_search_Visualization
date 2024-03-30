@@ -91,4 +91,5 @@ class LocalSearchStrategy:
             if len(path) > 1 and path[-1][2] <= path[-2][2]:
                 break
         print(path)
+        print("aaaaaaa")
         return path
