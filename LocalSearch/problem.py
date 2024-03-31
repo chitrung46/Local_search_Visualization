@@ -4,8 +4,9 @@ import numpy as np
 
 
 class Problem:
-    def __init__(self, filename):
+    def __init__(self, filename, initial_coor):
         self.X, self.Y, self.Z = self.load_state_space(filename)
+        self.initial_coor = initial_coor
 
     def load_state_space(self, filename):
         img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
