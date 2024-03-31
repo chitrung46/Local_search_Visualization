@@ -57,6 +57,7 @@ class LocalSearchStrategy:
         print(path)
         return path
 
+    # Local Beam Search
     def get_successors(self, x, y, space):
         X, Y, val = space
         successors = []
@@ -71,25 +72,28 @@ class LocalSearchStrategy:
                     successors.append((new_x, new_y, val[new_y, new_x]))
         return successors
 
-    # Local Beam Search
     def local_beam_search(self, problem, k=1):
         X, Y, V = problem.X, problem.Y, problem.Z
-        # max_goal = max(V.flatten())
-        path = []
-        # x, y = random.choice(X), random.choice(Y)
-        states = [(0, 0, V[0, 0])]
+
+        states = [((random.choice(X), random.choice(Y)), []) for _ in range(k)]
+        best_path = []
 
         while True:
-            successors = set()
+            new_states = []
+
             for state in states:
-                successor = self.get_successors(state[0], state[1], (X, Y, V))
-                successors.update(successor)
+                (x, y), path = state
 
-            states = sorted(successors, key=lambda x: x[2], reverse=True)[:k]
-            # print(states)
-            path.append(states[0])
-            if len(path) > 1 and path[-1][2] <= path[-2][2]:
-                break
-        print(path)
+                successors = self.get_successors(x, y, (X, Y, V))
+                for successor in successors:
+                    new_path = path + [successor]
+                    if not any(s[0] == successor[:2] for s in new_states):
+                        new_states.append((successor[:2], new_path))
 
-        return path
+            states = sorted(new_states, key=lambda x: x[1][-1][2], reverse=True)[:k]
+
+            if not best_path or states[0][1][-1][2] > best_path[-1][2]:
+                best_path = states[0][1]
+            else:
+                print(best_path)
+                return best_path
