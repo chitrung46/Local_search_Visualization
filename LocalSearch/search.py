@@ -4,29 +4,22 @@ import random
 class LocalSearchStrategy:
     def get_best_successors(self, x, y, space):
         X, Y, val = space
-        available_x = [x]
-        available_y = [y]
+        neighbors = []
 
         if x < X[-1]:
-            available_x.append(x + 1)
+            neighbors.append([x+1, y, val[y,x+1]])
         if x > 0:
-            available_x.append(x - 1)
+            neighbors.append([x-1, y, val[y,x-1]])
         if y < Y[-1]:
-            available_y.append(y + 1)
+            neighbors.append([x, y+1, val[y+1,x]])
         if y > 0:
-            available_y.append(y - 1)
+            neighbors.append([x, y-1, val[y-1,x]])
 
-        best_neighbor = (
-            available_x[0],
-            available_y[0],
-            val[available_y[0], available_x[0]],
-        )
+        best_neighbor = neighbors[0]
 
-        for y in available_y:
-            for x in available_x:
-                if val[y, x] > best_neighbor[2]:
-
-                    best_neighbor = (x, y, val[y, x])
+        for neigh in neighbors:
+            if neigh[2] > best_neighbor[2]:
+                best_neighbor = neigh
 
         return best_neighbor
 

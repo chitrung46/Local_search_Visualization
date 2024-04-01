@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Problem:
-    def __init__(self, filename, initial_coor):
+    def __init__(self, filename, initial_coor=None):
         self.X, self.Y, self.Z = self.load_state_space(filename)
         self.initial_coor = initial_coor
 
