@@ -1,3 +1,4 @@
+import heapq
 import random
 
 
@@ -7,13 +8,13 @@ class LocalSearchStrategy:
         neighbors = []
 
         if x < X[-1]:
-            neighbors.append([x+1, y, val[y,x+1]])
+            neighbors.append([x + 1, y, val[y, x + 1]])
         if x > 0:
-            neighbors.append([x-1, y, val[y,x-1]])
+            neighbors.append([x - 1, y, val[y, x - 1]])
         if y < Y[-1]:
-            neighbors.append([x, y+1, val[y+1,x]])
+            neighbors.append([x, y + 1, val[y + 1, x]])
         if y > 0:
-            neighbors.append([x, y-1, val[y-1,x]])
+            neighbors.append([x, y - 1, val[y - 1, x]])
 
         best_neighbor = neighbors[0]
 
@@ -59,17 +60,27 @@ class LocalSearchStrategy:
             for dy in [-1, 0, 1]:
                 if dx == 0 and dy == 0:
                     continue
+                if dx != 0 and dy != 0:
+                    continue
                 new_x, new_y = x + dx, y + dy
 
                 if 0 <= new_x < len(X) and 0 <= new_y < len(Y):
                     successors.append((new_x, new_y, val[new_y, new_x]))
+
         return successors
 
     def local_beam_search(self, problem, k=1):
         X, Y, V = problem.X, problem.Y, problem.Z
 
-        states = [((random.choice(X), random.choice(Y)), []) for _ in range(k)]
+        if problem.initial_coor is None:
+            x, y = random.choice(X), random.choice(Y)
+            problem.initial_coor = (x, y, V[y, x])
+
+        x, y = problem.initial_coor[0], problem.initial_coor[1]
+        states = [((x, y), []) for _ in range(k)]
+
         best_path = []
+        seen = set()
 
         while True:
             new_states = []
@@ -78,9 +89,11 @@ class LocalSearchStrategy:
                 (x, y), path = state
 
                 successors = self.get_successors(x, y, (X, Y, V))
+                # successor: (x, y, value)
                 for successor in successors:
-                    new_path = path + [successor]
-                    if not any(s[0] == successor[:2] for s in new_states):
+                    if successor[:2] not in seen:
+                        seen.add(successor[:2])
+                        new_path = path + [successor]
                         new_states.append((successor[:2], new_path))
 
             states = sorted(new_states, key=lambda x: x[1][-1][2], reverse=True)[:k]
