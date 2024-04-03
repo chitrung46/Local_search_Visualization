@@ -77,7 +77,7 @@ class LocalSearchStrategy:
             problem.initial_coor = (x, y, V[y, x])
 
         x, y = problem.initial_coor[0], problem.initial_coor[1]
-        states = [((x, y), [])]
+        states = [((x, y), [(x, y, V[x, y])])]
 
         best_path = []
         seen = set()
