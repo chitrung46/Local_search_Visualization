@@ -1,4 +1,5 @@
 import heapq
+import math
 import random
 
 
@@ -74,32 +75,24 @@ class LocalSearchStrategy:
 
         if problem.initial_coor is None:
             x, y = random.choice(X), random.choice(Y)
-            problem.initial_coor = (x, y, V[y, x])
-
-        x, y = problem.initial_coor[0], problem.initial_coor[1]
-        states = [((x, y), [(x, y, V[y, x])])]
-
-        best_path = []
-        seen = set()
+        else:
+            x, y = problem.initial_coor[0], problem.initial_coor[1]
+        states = [((x, y, V[y, x]), [(x, y, V[y, x])])]  # (x, y), path
+        path = states[-1][1]
 
         while True:
-            new_states = []
-
-            for state in states:
-                (x, y), path = state
-
+            new_state = []
+            for (x, y, _), path in states:
                 successors = self.get_successors(x, y, (X, Y, V))
-                # successor: (x, y, value)
+
                 for successor in successors:
-                    if successor[:2] not in seen:
-                        seen.add(successor[:2])
-                        new_path = path + [successor]
-                        new_states.append((successor[:2], new_path))
+                    new_path = path + [successor]
+                    new_state.append((successor, new_path))
 
-            states = sorted(new_states, key=lambda x: x[1][-1][2], reverse=True)[:k]
-
-            if not best_path or states[0][1][-1][2] > best_path[-1][2]:
-                best_path = states[0][1]
+            new_state = sorted(new_state, key=lambda x: x[0][2], reverse=True)[:k]
+            if path[-1][2] < new_state[0][0][2]:
+                path = new_state[0][1]
+                states = new_state
             else:
-                print(best_path)
-                return best_path
+                print(path)
+                return path
