@@ -96,3 +96,34 @@ class LocalSearchStrategy:
             else:
                 print(path)
                 return path
+    
+    #Simulated-annealing   
+    def simulated_annealing_search(self, problem, schedule):
+        X, Y, V = problem.X, problem.Y, problem.Z
+
+        if problem.initial_coor is None:
+            x, y = random.choice(X), random.choice(Y)
+        else:
+            x, y = problem.initial_coor[0], problem.initial_coor[1]
+
+        state = [(x, y), [(x, y, V[y, x])]]
+        T = 1
+
+        while True:
+            T = schedule(T)
+
+            if T <= 0:
+                return state[1]
+
+            (x, y), path = state
+            next_state = random.choice(self.get_successors(x, y, (X, Y, V)))
+
+            delta = int(next_state[2]) - int(V[y, x])
+
+            if delta > 0 or random.random() < math.exp(delta/T):
+                path = state[1] + [next_state]
+                state = [(next_state[0], next_state[1]), path]
+
+            else:
+                print(state[1])
+                return state[1]
