@@ -93,8 +93,8 @@ class LocalSearchStrategy:
                 path = new_state[0][1]
                 states = new_state
             else:
-                print(best_path)
-                return best_path
+                print(path)
+                return path
 
     def simulated_annealing_search(self, problem, schedule):
         X = problem.X
