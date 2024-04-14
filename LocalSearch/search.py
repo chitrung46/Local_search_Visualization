@@ -1,27 +1,27 @@
 import random
-
+import math
 
 class LocalSearchStrategy:
     def get_best_successors(self, x, y, space):
         X, Y, val = space
-        neighbors = []
+        successors = []
 
         if x < X[-1]:
-            neighbors.append([x+1, y, val[y,x+1]])
+            successors.append([x+1, y, val[y,x+1]])
         if x > 0:
-            neighbors.append([x-1, y, val[y,x-1]])
+            successors.append([x-1, y, val[y,x-1]])
         if y < Y[-1]:
-            neighbors.append([x, y+1, val[y+1,x]])
+            successors.append([x, y+1, val[y+1,x]])
         if y > 0:
-            neighbors.append([x, y-1, val[y-1,x]])
+            successors.append([x, y-1, val[y-1,x]])
 
-        best_neighbor = neighbors[0]
+        best_succ = successors[0]
 
-        for neigh in neighbors:
-            if neigh[2] > best_neighbor[2]:
-                best_neighbor = neigh
+        for succ in successors:
+            if succ[2] > best_succ[2]:
+                best_succ = succ
 
-        return best_neighbor
+        return best_succ
 
     def random_restart_hill_climbing(self, problem, num_trial=1):
         X = problem.X
@@ -55,15 +55,17 @@ class LocalSearchStrategy:
         X, Y, val = space
         successors = []
 
-        for dx in [-1, 0, 1]:
-            for dy in [-1, 0, 1]:
-                if dx == 0 and dy == 0:
-                    continue
-                new_x, new_y = x + dx, y + dy
+        if x < X[-1]:
+            successors.append([x+1, y, val[y,x+1]])
+        if x > 0:
+            successors.append([x-1, y, val[y,x-1]])
+        if y < Y[-1]:
+            successors.append([x, y+1, val[y+1,x]])
+        if y > 0:
+            successors.append([x, y-1, val[y-1,x]])
 
-                if 0 <= new_x < len(X) and 0 <= new_y < len(Y):
-                    successors.append((new_x, new_y, val[new_y, new_x]))
         return successors
+
 
     def local_beam_search(self, problem, k=1):
         X, Y, V = problem.X, problem.Y, problem.Z
@@ -90,3 +92,35 @@ class LocalSearchStrategy:
             else:
                 print(best_path)
                 return best_path
+
+    def simulated_annealing_search(self, problem, schedule):
+        X = problem.X
+        Y = problem.Y
+        Z = problem.Z
+        
+        if problem.initial_coor is None:
+            x, y = random.choice(X), random.choice(Y)
+        else: 
+            x, y = problem.initial_coor[0], problem.initial_coor[1]
+        current_state = (x, y, Z[y, x])
+        current_energy = int(Z[y, x])
+
+        path = [current_state]
+        t = 1
+        while True:
+            T = schedule(t)
+            if T <= 0.0000000001:
+                return path
+            
+            next_state = random.choice(self.get_successors(current_state[0], current_state[1], (X,Y,Z)))
+
+            if next_state in path:
+                continue
+            next_energy = int(next_state[2])
+            delta_E = next_energy - current_energy
+
+            if delta_E > 0 or math.exp(delta_E / T) > random.random():
+                current_state = next_state
+                current_energy = next_energy
+                path.append(next_state)
+            t += 1

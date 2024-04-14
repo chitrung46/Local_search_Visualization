@@ -1,8 +1,15 @@
 from problem import Problem
 from search import LocalSearchStrategy as LCS
+import random
+
+def schedule(t):
+    return 1 / (t**2)
 
 p = Problem("monalisa.jpg")
-search = LCS()
-path = search.random_restart_hill_climbing(p, 5)
+lcs = LCS()
+# pathLCS = lcs.random_restart_hill_climbing(p, 5)
+pathSA = lcs.simulated_annealing_search(p, schedule)
 
-p.draw_path(path)
+p.draw_path(pathSA)
+# print(pathSA)
+

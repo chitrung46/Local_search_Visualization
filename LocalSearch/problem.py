@@ -28,6 +28,7 @@ class Problem:
         plt.show()
 
     def draw_path(self, path):
+        print(path)
         Xpath = [t[0] for t in path]
         Ypath = [t[1] for t in path]
         Zpath = [t[2] for t in path]
