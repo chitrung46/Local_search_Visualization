@@ -12,4 +12,5 @@ pathSA = lcs.simulated_annealing_search(p, schedule)
 
 p.draw_path(pathSA)
 # print(pathSA)
+# KThen đã vào xem
 
