@@ -7,7 +7,7 @@ class LocalSearchStrategy:
     def random_restart_hill_climbing(self, problem, num_trial=1):
         path = []
 
-        for i in range(num_trial):
+        for _ in range(num_trial):
             x, y = problem.random_coor()
             curr_state = (x, y, problem.get_value(x, y))
             curr_path = [curr_state]
@@ -33,10 +33,18 @@ class LocalSearchStrategy:
 
     # Local Beam Search
     def local_beam_search(self, problem, k=1):
-        x, y = problem.get_initial_coor()
-        initial = (x, y, problem.get_value(x, y)) 
-        states = [(initial, [initial])]
-        path = states[-1][1]
+        states = []
+        path = []
+
+        # Initial k random state
+        for _ in range (k):
+            x, y = problem.random_coor() 
+            val = problem.get_value(x, y)
+            initial = (x, y, val)
+            states.append([(initial), [initial]])
+
+            if len(path) == 0 or path[-1][2] < val:
+                path.append(initial)
 
         while True:
             new_states = []
