@@ -1,7 +1,9 @@
-from problem import Problem
-from search import LocalSearchStrategy as LCS
 import random
 import math
+
+from problem import Problem
+from search import LocalSearchStrategy as LCS
+
 
 def schedule(t):
     # print(0.88 / (math.log(t + 1)) - 0.0000000001)
@@ -11,6 +13,7 @@ def schedule(t):
 
 p = Problem("monalisa.jpg")
 lcs = LCS()
+
 pathHC = lcs.random_restart_hill_climbing(p, 5)
 pathSA = lcs.simulated_annealing_search(p, schedule)
 pathLB = lcs.local_beam_search(p, 3)
